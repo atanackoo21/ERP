@@ -1,0 +1,40 @@
+
+ {
+   "reservation_id": "1",
+   "date": "2011-11-21",
+   "time": "11:15",
+   "price": "1000rsd",
+   "customer":{
+     "customer_id": "21",
+     "user":{
+       "user_id": "121",
+       "first_name": "Aleksa",
+       "last_name": "ALeksic",
+       "email": "alexa@gmail.com"
+     }
+   },
+   "worker": {
+     "worker_id": "1",
+     "user": {
+          "user_id": "3",
+          "first_name": "Aleksa",
+          "last_name": "Aleksic"
+      }
+   },
+   "status": {
+     "status_id": "12",
+     "status_name" : "Accept"
+   },
+   "type_of_service": {
+     "type_of_service_id": "1",
+      "name": "Relaks masaza",
+      "price" : "1000din",
+      "service": {
+        "service_id": "1",
+        "service_name": "Masaza"
+      }
+   },
+   "manager_id": "1",
+   "confirmation": true,
+   "description": "U izradi.."
+ } 

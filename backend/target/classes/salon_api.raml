@@ -1,0 +1,389 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/016b6435-f57c-46e5-8320-05d9a4fefa16/ # 
+
+title: Salon_API
+
+
+types:
+  customer-schema: !include schemas/customer_scheme.raml
+  status-schema: !include schemas/status_scheme.raml
+  service-schema: !include schemas/service_scheme.raml
+  type-of-service-schema: !include schemas/type_of_service_scheme.raml
+  user-schema: !include schemas/user_scheme.raml
+  worker-schema: !include schemas/worker_scheme.raml
+  manager-schema: !include schemas/manager_scheme.raml
+  notification-schema: !include schemas/notification_scheme.raml
+  reservation-schema: !include schemas/reservation_scheme.raml
+
+/statuses:
+  get:
+    queryParameters:
+      status_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [status-schema]
+            example: !include examples/status_example.json
+
+  post:  
+    body:
+      application/json:
+        type: [status-schema]
+        example: !include examples/status_example.json   
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "Status is added." }
+  /{status_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [status-schema]
+              example: !include examples/status_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "Status is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "Status is deleted." }
+  
+
+/users:
+  get:
+    queryParameters:
+      first_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [user-schema]
+            example: !include examples/user_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "user is added." }
+  /{user_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [user-schema]
+              example: !include examples/user_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "user is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "user is deleted." }
+
+                    
+/workers:
+  get:
+    queryParameters:
+      ucin?: string
+      first_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [worker-schema]
+            example: !include examples/worker_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "Worker is added." }
+  /{worker_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [worker-schema]
+              example: !include examples/worker_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "Worker is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "Worker is deleted." }
+
+/managers:
+  get:
+    queryParameters:
+      manager_id?: string
+      first_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [manager-schema]
+            example: !include examples/manager_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "manager is added." }
+  /{manager_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [manager-schema]
+              example: !include examples/manager_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "manager is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "manager is deleted." }
+
+/customers:
+  get:
+    queryParameters:
+      customer_id?: string
+      first_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [customer-schema]
+            example: !include examples/customer_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "customer is added." }
+  /{customer_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [customer-schema]
+              example: !include examples/customer_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "customer is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "customer is deleted." }
+
+/notifications:
+  get:
+    queryParameters:
+      notification_id?: integer
+      description?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [notification-schema]
+            example: !include examples/notification_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "notification is added." }
+  /{notification_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [notification-schema]
+              example: !include examples/notification_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "notification is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "notification is deleted." }
+        
+/reservations:
+  get:
+    queryParameters:
+      reservation_id?: string
+      description?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [reservation-schema]
+            example: !include examples/reservation_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "reservation is added." }
+  /{reservation_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [reservation-schema]
+              example: !include examples/reservation_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "reservation is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "reservation is deleted." }
+
+
+/services:
+  get:
+    queryParameters:
+      service_name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [service-schema]
+            example: !include examples/service_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "service is added." }
+  /{service_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [service-schema]
+              example: !include examples/service_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "service is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "service is deleted." }
+
+/typeofservices:
+  get:
+    queryParameters:
+      name?: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: [type-of-service-schema]
+            example: !include examples/type_of_service_example.json
+  post:    
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                  { "message": "type of service is added." }
+  /{type_of_service_id}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: [type-of-service-schema]
+              example: !include examples/type_of_service_example.json
+    put:    
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "type of service is added/modified." }
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                    { "message": "type of service is deleted." }

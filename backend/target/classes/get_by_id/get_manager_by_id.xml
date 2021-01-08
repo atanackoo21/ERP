@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<flow name="get_manager_by_idFlow">
+		<set-variable variableName="id" value="#[flowVars.manager_id]" doc:name="Variable"/>
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[select manager_id, manager.user_id, user.first_name, user.last_name, user.email, user.phone, user.role
+from manager inner join user on (manager.user_id = user.user_id)
+where manager_id = #[flowVars.id]]]></db:parameterized-query>
+		</db:select>
+		<choice doc:name="Choice">
+			<when expression="#[payload.size() == 0]">
+				<set-property propertyName="http.status" value="400" doc:name="Property"/>
+				<set-payload value="#['Not found!']" doc:name="Set Payload"/>
+			</when>
+			<otherwise>
+				<dw:transform-message doc:name="Transform Message" metadata:id="6e34a728-da61-4e9b-a7ab-e07957ba935e">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	manager_id: payload.manager_id,
+	user: {
+		user_id: payload.user_id,
+		first_name: payload.first_name,
+		last_name: payload.last_name,
+		email: payload.email,
+		phone: payload.phone,
+		role: payload.role
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

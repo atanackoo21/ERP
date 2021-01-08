@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd">
+	<smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail"/>
+	<smtp:connector name="SMTP" validateConnections="true" doc:name="SMTP"/>
+	<flow name="post_reservationFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="uuid" value="#[function:uuid]" doc:name="Variable"/>
+		<set-variable variableName="object" value="#[payload]" doc:name="Variable"/>
+		<db:insert config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[insert into reservation values (#[flowVars.uuid], #[payload.date], #[payload.time], #[payload.customer.customer_id], #[payload.manager_id], #[payload.worker.worker_id], #[payload.status.status_id], #[payload.type_of_service.type_of_service_id], #[payload.confirmation], #[payload.price], #[payload.description])]]></db:parameterized-query>
+		</db:insert>
+		<choice doc:name="Choice">
+			<when expression="#[payload != 0]">
+				<scatter-gather doc:name="Scatter-Gather">
+					<processor-chain>
+						<logger message="Post done!" level="INFO" doc:name="Logger"/>
+						<set-payload value="Succesful post!" doc:name="Set Payload"/>
+					</processor-chain>
+					<processor-chain>
+						<logger message="Send email start" level="INFO" doc:name="Logger"/>
+						<flow-ref name="post_reservationFlow1" doc:name="Flow Reference"/>
+					</processor-chain>
+				</scatter-gather>
+			</when>
+			<otherwise>
+				<logger message="Bad post" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+		<choice-exception-strategy doc:name="Choice_Exception_Strategy">
+			<catch-exception-strategy when="#[exception.causeMatches('java.sql.SQLIntegrityConstraintViolationException')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Constraint error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('com.mysql.cj.jdbc.exceptions.MysqlDataTruncation')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Data truncation!   -----&gt;    &quot; + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Data error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('java.sql.SQLException')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Data truncated for column...    -----&gt;    &quot; + exception]" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Property"/>
+				<logger message="&quot;Data error&quot;" level="INFO" doc:name="Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('javax.mail')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Property"/>
+				<logger message="&quot;Email error&quot;" level="INFO" doc:name="Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('java.lang.IllegalArgumentException')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Property"/>
+				<logger message="&quot;Illegal argument&quot;" level="INFO" doc:name="Logger"/>
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+	<flow name="post_reservationFlow1">
+		<set-payload value="Po&#353;tovani koisni&#269;e,#['\n']#['\n']Izvr&#353;ili ste uspe&#353;nu rezervaciju za datum #[flowVars.object.date] u #[flowVars.object.time] &#269;asova.#['\n']Usluga na koju se odnosi rezervacija je #[flowVars.object.type_of_service.name].#['\n'] Cena tretmana iznosi #[flowVars.object.price].#['\n'] #['\n'] Vidimo se u dogovoreno vreme, na dobro poznatoj lokaciji na&#353;eg salona.#['\n'] #['\n'] Srda&#269;an pozdrav :)" doc:name="Set Payload"/>
+		<smtp:outbound-endpoint host="smtp.gmail.com" port="587" user="miki.nosonja12@gmail.com" password="mulesoft2020" connector-ref="Gmail" to="#[flowVars.object.customer.user.email]" from="miki.nosonja12@gmail.com" subject="About reservation" responseTimeout="10000" doc:name="SMTP"/>
+		<logger message="Successful email sending!" level="INFO" doc:name="Logger"/>
+		<set-payload value="Successful email sending!" doc:name="Set Payload"/>
+		<choice-exception-strategy doc:name="Exception_Strategy">
+			<catch-exception-strategy when="#[exception.causeMatches('javax.mail')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Exception! Error email sending  -----&gt;    &quot;  + exception]" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Property"/>
+				<logger message="&quot;Email error&quot;" level="INFO" doc:name="Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('java.lang.IllegalArgumentException')]" doc:name="Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Property"/>
+				<logger message="&quot;Illegal argument&quot;" level="INFO" doc:name="Logger"/>
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+</mule>

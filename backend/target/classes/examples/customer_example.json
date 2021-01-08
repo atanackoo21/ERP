@@ -1,0 +1,13 @@
+
+  {
+   "customer_id": "1",
+   "points": 2,
+   "user": {
+      "user_id": "2",
+      "first_name": "Aleksa",
+      "last_name": "Aleksic",
+      "email": "alexa.atanacko21@gm.cm",
+      "phone": "055/666-555",
+      "role": "customer"
+   }
+  }

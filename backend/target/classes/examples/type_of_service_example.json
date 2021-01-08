@@ -1,0 +1,12 @@
+
+  {
+   "type_of_service_id": "1",
+   "name": "Relaks masaza",
+   "description": "Relaks masaza - ledja i ramena",
+   "actual": true,
+   "price" : "1000din",
+   "service": {
+     "service_id": "1",
+     "service_name": "Masaza"
+    }
+  }

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <http:listener-config name="salon_api-httpListenerConfig" host="0.0.0.0" port="8085" doc:name="HTTP Listener Configuration" />
+    <apikit:config name="salon_api-config" raml="salon_api.raml" consoleEnabled="false" doc:name="Router" keepRamlBaseUri="false"/>
+    <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306" user="root" password="unsAtanacko21" database="salon" doc:name="MySQL Configuration" />
+    <flow name="salon_api-main">
+        <http:listener config-ref="salon_api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
+        <apikit:router config-ref="salon_api-config" doc:name="APIkit Router" />
+        <exception-strategy ref="salon_api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="salon_api-console">
+        <http:listener config-ref="salon_api-httpListenerConfig" path="/console/*" doc:name="HTTP" />
+        <apikit:console config-ref="salon_api-config" doc:name="APIkit Console" />
+    </flow>
+    <flow name="put:/customers/{customer_id}:salon_api-config">
+		<flow-ref name="put_customerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/managers/{manager_id}:salon_api-config">
+		<flow-ref name="put_managerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/notifications/{notification_id}:salon_api-config">
+		<flow-ref name="put_notificationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/reservations/{reservation_id}:salon_api-config">
+		<flow-ref name="put_reservationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/services/{service_id}:salon_api-config">
+		<flow-ref name="put_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/statuses/{status_id}:salon_api-config">
+		<flow-ref name="put_statusFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/typeofservices/{type_of_service_id}:salon_api-config">
+		<flow-ref name="put_type_of_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/users/{user_id}:salon_api-config">
+		<flow-ref name="put_userFlow" doc:name="Flow Reference"/>
+
+    </flow>
+
+    <flow name="delete:/customers/{customer_id}:salon_api-config">
+		<flow-ref name="delete_customerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/managers/{manager_id}:salon_api-config">
+		<flow-ref name="delete_managerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/notifications/{notification_id}:salon_api-config">
+		<flow-ref name="delete_notificationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/reservations/{reservation_id}:salon_api-config">
+		<flow-ref name="delete_reservationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/services/{service_id}:salon_api-config">
+		<flow-ref name="delete_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/statuses/{status_id}:salon_api-config">
+		<flow-ref name="delete_statusFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/typeofservices/{type_of_service_id}:salon_api-config">
+		<flow-ref name="delete_type_of_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/users/{user_id}:salon_api-config">
+		<flow-ref name="delete_userFlow" doc:name="Flow Reference"/>
+
+    </flow>
+
+    <flow name="get:/customers:salon_api-config">
+		<flow-ref name="get_customersFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/managers:salon_api-config">
+		<flow-ref name="get_managersFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/notifications:salon_api-config">
+		<flow-ref name="get_notificationsFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/reservations:salon_api-config">
+		<flow-ref name="get_reservationsFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/services:salon_api-config">
+        <flow-ref name="get_servicesFlow" doc:name="Flow Reference" />
+    </flow>
+    <flow name="get:/statuses:salon_api-config">
+        <flow-ref name="get_statusesFlow" doc:name="Flow Reference" />
+    </flow>
+    <flow name="get:/typeofservices:salon_api-config">
+        <flow-ref name="get_type_of_servicesFlow" doc:name="Flow Reference" />
+    </flow>
+    <flow name="get:/users:salon_api-config">
+        <flow-ref name="get_usersFlow" doc:name="Flow Reference" />
+    </flow>
+
+    <flow name="get:/customers/{customer_id}:salon_api-config">
+		<flow-ref name="get_customer_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/managers/{manager_id}:salon_api-config">
+		<flow-ref name="get_manager_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/reservations/{reservation_id}:salon_api-config">
+		<flow-ref name="get_reservation_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/notifications/{notification_id}:salon_api-config">
+		<flow-ref name="get_notification_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/services/{service_id}:salon_api-config">
+		<flow-ref name="get_services_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/statuses/{status_id}:salon_api-config">
+		<flow-ref name="get_status_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/typeofservices/{type_of_service_id}:salon_api-config">
+		<flow-ref name="get_type_of_services_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/users/{user_id}:salon_api-config">
+		<logger message="helloo users" level="INFO" doc:name="Logger"/>
+		<flow-ref name="get_user_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/worker/{worker_id}:salon_api-config">
+		<flow-ref name="get_worker_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/customers:salon_api-config">
+		<flow-ref name="post_customerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/managers:salon_api-config">
+		<flow-ref name="post_managerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/notifications:salon_api-config">
+		<flow-ref name="post_notificationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/reservations:salon_api-config">
+		<flow-ref name="post_reservationFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/services:salon_api-config">
+		<flow-ref name="post_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+
+    <flow name="post:/typeofservices:salon_api-config">
+		<flow-ref name="post_type_of_serviceFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/users:salon_api-config">
+		<flow-ref name="post_userFlow" doc:name="Flow Reference"/>
+
+    </flow>
+
+    <flow name="post:/statuses:application/json:salon_api-config">
+		<flow-ref name="post_statusFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="put:/workers/{worker_id}:salon_api-config">
+		<flow-ref name="put_workerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="delete:/workers/{worker_id}:salon_api-config">
+		<flow-ref name="delete_workerFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/workers:salon_api-config">
+		<flow-ref name="get_workersFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="get:/workers/{worker_id}:salon_api-config">
+		<flow-ref name="get_worker_by_idFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <flow name="post:/workers:salon_api-config">
+		<flow-ref name="post_workersFlow" doc:name="Flow Reference"/>
+
+    </flow>
+    <apikit:mapping-exception-strategy name="salon_api-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload" />
+        </apikit:mapping>
+
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload" />
+        </apikit:mapping>
+		<apikit:mapping statusCode="400">
+			<apikit:exception value="org.mule.module.apikit.exception.BadRequestException"/>
+			<set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+			<set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+		</apikit:mapping>
+		<apikit:mapping statusCode="405">
+			<apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException"/>
+			<set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+			<set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+		</apikit:mapping>
+		<apikit:mapping statusCode="415">
+			<apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException"/>
+			<set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+			<set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+		</apikit:mapping>
+		<apikit:mapping statusCode="500">
+			<apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException"/>
+			<set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+			<set-payload value="{ &quot;message&quot;: &quot;Internal server error (ERROR 500)&quot; }" doc:name="Set Payload"/>
+		</apikit:mapping>
+
+    </apikit:mapping-exception-strategy>
+</mule>

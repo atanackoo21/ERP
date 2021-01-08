@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<flow name="get_reservationsFlow">
+		<set-variable variableName="id" value="#[message.inboundProperties.'http.query.params'.reservation_id]" doc:name="Variable"/>
+		<set-variable variableName="description" value="#[message.inboundProperties.'http.query.params'.description]" doc:name="Variable"/>
+		<choice doc:name="Choice">
+			<when expression="#[flowVars.id != null]">
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select r.reservation_id as "reservationID", r.date, r.time, r.price as "r_price", r.customer_id as 	"r_customer_id", r.confirmation as "r_confirmation", r.manager_id as "r_manager_id", 
+	r.description as "r_description", u.user_id as "user_suctomer_ID", u.first_name as 
+	"customer_name", u.last_name as "customer_surname", u.email as "customer_email", w.worker_id as "workerID", us.user_id as "user_worker_ID",  	us.first_name as "worker_name",  us.last_name as "worker_surname", s.status_id, s.status_name, 	t.type_of_service_id, t.name as "type_of_ser_name", t.price as "type_of_ser_price", ser.service_id, 	ser.service_name
+from reservation as r inner join status as s on (r.status_id = s.status_id)
+					inner join type_of_service as t on (t.type_of_service_id = r.type_of_service_id)
+                    inner join service as ser on (t.service_id = ser.service_id)
+                    inner join customer as c on (c.customer_id = r.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)
+                    inner join worker as w on (w.worker_id = r.worker_id)
+                    inner join user as us on (w.worker_id = us.user_id)
+where r.reservation_id = #[flowVars.id]]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="8dbe8680-b03a-4502-af36-5f8846488fd1">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	reservation_id: payload.reservationID,
+	date: payload.date,
+	time: payload.time,
+	price: payload.r_price,
+	manager_id: payload.r_manager_id,
+	confirmation: payload.r_confirmation,
+	description: payload.r_description,
+	customer: {
+		customer_id: payload.r_customer_id,
+		user: {
+			user_id: payload.user_suctomer_ID,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname,
+			email: payload.customer_email
+		}
+	},
+	worker: {
+		worker_id: payload.workerID,
+		user: {
+			user_id: payload.user_worker_ID,
+			first_name: payload.worker_name,
+			last_name: payload.worker_surname
+		}
+	},
+	status: {
+		status_id: payload.status_id,
+		status_name: payload.status_name
+	},
+	type_of_service: {
+		type_of_service_id: payload.type_of_service_id,
+		name: payload.type_of_ser_name,
+		price: payload.type_of_ser_price,
+		service: {
+			service_id: payload.service_id,
+			service_name: payload.service_name
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</when>
+			<when expression="#[flowVars.description != null]">
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select r.reservation_id as "reservationID", r.date, r.time, r.price as "r_price", r.customer_id as 	"r_customer_id", r.confirmation as "r_confirmation", r.manager_id as "r_manager_id", 
+	r.description as "r_description", u.user_id as "user_suctomer_ID", u.first_name as 
+	"customer_name", u.last_name as "customer_surname", u.email as "customer_email", w.worker_id as "workerID", us.user_id as "user_worker_ID",  	us.first_name as "worker_name",  us.last_name as "worker_surname", s.status_id, s.status_name, 	t.type_of_service_id, t.name as "type_of_ser_name", t.price as "type_of_ser_price", ser.service_id, 	ser.service_name
+from reservation as r inner join status as s on (r.status_id = s.status_id)
+					inner join type_of_service as t on (t.type_of_service_id = r.type_of_service_id)
+                    inner join service as ser on (t.service_id = ser.service_id)
+                    inner join customer as c on (c.customer_id = r.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)
+                    inner join worker as w on (w.worker_id = r.worker_id)
+                    inner join user as us on (w.worker_id = us.user_id)
+where r.description = #[flowVars.description]]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Copy_of_Transform Message" metadata:id="8dbe8680-b03a-4502-af36-5f8846488fd1">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	reservation_id: payload.reservationID,
+	date: payload.date,
+	time: payload.time,
+	price: payload.r_price,
+	manager_id: payload.r_manager_id,
+	confirmation: payload.r_confirmation,
+	description: payload.r_description,
+	customer: {
+		customer_id: payload.r_customer_id,
+		user: {
+			user_id: payload.user_suctomer_ID,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname,
+			email: payload.customer_email
+		}
+	},
+	worker: {
+		worker_id: payload.workerID,
+		user: {
+			user_id: payload.user_worker_ID,
+			first_name: payload.worker_name,
+			last_name: payload.worker_surname
+		}
+	},
+	status: {
+		status_id: payload.status_id,
+		status_name: payload.status_name
+	},
+	type_of_service: {
+		type_of_service_id: payload.type_of_service_id,
+		name: payload.type_of_ser_name,
+		price: payload.type_of_ser_price,
+		service: {
+			service_id: payload.service_id,
+			service_name: payload.service_name
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select r.reservation_id as "reservationID", r.date, r.time, r.price as "r_price", r.customer_id as 	"r_customer_id", r.confirmation as "r_confirmation", r.manager_id as "r_manager_id", 
+	r.description as "r_description", u.user_id as "user_suctomer_ID", u.first_name as 
+	"customer_name", u.last_name as "customer_surname", u.email as "customer_email", w.worker_id as "workerID", us.user_id as "user_worker_ID",  	us.first_name as "worker_name",  us.last_name as "worker_surname", s.status_id, s.status_name, 	t.type_of_service_id, t.name as "type_of_ser_name", t.price as "type_of_ser_price", ser.service_id, 	ser.service_name
+from reservation as r inner join status as s on (r.status_id = s.status_id)
+					inner join type_of_service as t on (t.type_of_service_id = r.type_of_service_id)
+                    inner join service as ser on (t.service_id = ser.service_id)
+                    inner join customer as c on (c.customer_id = r.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)
+                    inner join worker as w on (w.worker_id = r.worker_id)
+                    inner join user as us on (w.worker_id = us.user_id)]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Copy_of_Transform Message" metadata:id="8dbe8680-b03a-4502-af36-5f8846488fd1">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	reservation_id: payload.reservationID,
+	date: payload.date,
+	time: payload.time,
+	price: payload.r_price,
+	manager_id: payload.r_manager_id,
+	confirmation: payload.r_confirmation,
+	description: payload.r_description,
+	customer: {
+		customer_id: payload.r_customer_id,
+		user: {
+			user_id: payload.user_suctomer_ID,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname,
+			email: payload.customer_email
+		}
+	},
+	worker: {
+		worker_id: payload.workerID,
+		user: {
+			user_id: payload.user_worker_ID,
+			first_name: payload.worker_name,
+			last_name: payload.worker_surname
+		}
+	},
+	status: {
+		status_id: payload.status_id,
+		status_name: payload.status_name
+	},
+	type_of_service: {
+		type_of_service_id: payload.type_of_service_id,
+		name: payload.type_of_ser_name,
+		price: payload.type_of_ser_price,
+		service: {
+			service_id: payload.service_id,
+			service_name: payload.service_name
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+
+			</otherwise>
+		</choice>
+
+	</flow>
+</mule>

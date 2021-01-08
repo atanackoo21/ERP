@@ -1,0 +1,23 @@
+#%RAML 1.0 DataType
+
+type: object
+
+properties:
+   worker_id:
+    type: string
+    required: true
+   ucin:
+    type: string
+    required: false
+   start_date: 
+    type: date-only
+    required: true
+   end_date: 
+    type: date-only
+    required: false
+   active:
+    type: boolean
+    required: true
+   user:
+    type: object
+    required: true

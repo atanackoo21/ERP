@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "reservation1"
+        }
+    },
+    "id": "e4f3ea01-47a2-42b8-9371-7b00dd44bc1e",
+    "version": "5.2.0.0"
+}

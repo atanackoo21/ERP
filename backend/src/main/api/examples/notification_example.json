@@ -1,0 +1,21 @@
+
+  {
+   "notification_id": 1,
+   "reservation": {
+     "reservation_id": "1",
+     "date": "2009-01-01",
+     "time": "11:35",
+     "price": "1000din"
+   },
+   "customer":{
+     "customer_id": "21",
+     "user":{
+       "user_id": "121",
+       "first_name": "Aleksa",
+       "last_name": "ALeksic"
+     }
+   },
+   "manager_id": "1",
+   "confirmation": true,
+   "description": "opis u izradi"
+  }

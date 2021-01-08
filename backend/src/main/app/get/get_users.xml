@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<flow name="get_usersFlow">
+		<set-variable variableName="name" value="#[message.inboundProperties.'http.query.params'.first_name]" doc:name="Variable"/>
+		<choice doc:name="Choice">
+			<when expression="#[flowVars.name != null]">
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[Select user_id, first_name, last_name, email, phone, role
+from user
+where first_name like #[flowVars.name]]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="b26c4fed-6eb6-46cf-84f5-9e03e376e0bd">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	user_id: payload.user_id,
+	first_name: payload.first_name,
+	last_name: payload.last_name,
+	email: payload.email,
+	phone: payload.phone,
+	role: payload.role
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[Select user_id, first_name, last_name, email, phone, role
+from user]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="b26c4fed-6eb6-46cf-84f5-9e03e376e0bd">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	user_id: payload.user_id,
+	first_name: payload.first_name,
+	last_name: payload.last_name,
+	email: payload.email,
+	phone: payload.phone,
+	role: payload.role
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<flow name="delete_statusFlow">
+		<set-variable variableName="id" value="#[message.inboundProperties.'http.uri.params'.get('status_id').toString()]" doc:name="Variable"/>
+		<db:delete config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[delete 
+from status
+where status_id = #[flowVars.id];]]></db:parameterized-query>
+		</db:delete>
+		<choice doc:name="Choice">
+			<when expression="#[payload == 0]">
+				<set-payload value="#['Error! Not found.']" doc:name="Set Payload"/>
+				<set-property propertyName="http.status" value="400" doc:name="Property"/>
+			</when>
+			<otherwise>
+				<set-payload value="#['Status is deleted!']" doc:name="Set Payload"/>
+			</otherwise>
+		</choice>
+		<choice-exception-strategy doc:name="Copy_of_Choice_Exception_Strategy">
+			<catch-exception-strategy when="#[exception.causeMatches('java.sql.SQLIntegrityConstraintViolationException')]" doc:name="Copy_of_Exception Strategy">
+				<set-payload value="#[&quot;Constraint exception!  ------&gt;  &quot; + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Constraint error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+</mule>

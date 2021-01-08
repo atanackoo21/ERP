@@ -1,0 +1,12 @@
+
+  {
+   "manager_id": "1",
+   "user": {
+      "user_id": "1",
+      "first_name": "Aleksa",
+      "last_name": "Aleksic",
+      "email": "alexa.atanacko21@gm.cm",
+      "phone": "055/666-555",
+      "role": "manager"
+   }
+  }

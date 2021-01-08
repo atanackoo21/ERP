@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<flow name="get_notificationsFlow">
+		<set-variable variableName="id" value="#[message.inboundProperties.'http.query.params'.notification_id]" doc:name="Variable"/>
+		<set-variable variableName="description" value="#[message.inboundProperties.'http.query.params'.description]" doc:name="Variable"/>
+		<choice doc:name="Choice">
+			<when expression="#[flowVars.id != null]">
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select n.notification_id, n.customer_id, n.manager_id, n.reservation_id, n.confirmation, 
+	   n.description, r.price, r.reservation_id  as "reservationID", r.date, r.time,
+	   u.user_id, u.first_name as "customer_name", u.last_name as "customer_surname"
+from notification as n inner join reservation as r on (n.reservation_id = r.reservation_id)
+					inner join customer as c on (r.customer_id = c.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)
+where n.notification_id = #[flowVars.id]]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="c2ab4b07-968e-4f30-bea0-8e5c55313420">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	notification_id: payload.notification_id,
+	manager_id: payload.manager_id,
+	confirmation: payload.confirmation,
+	description: payload.description,
+	reservation: {
+		reservation_id: payload.reservation_id,
+		date: payload.date,
+		time: payload.time,
+		price: payload.price
+	},
+	customer: {
+		customer_id: payload.customer_id,
+		user: {
+			user_id: payload.user_id,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</when>
+			<when expression="#[flowVars.description != null]">
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select n.notification_id, n.customer_id, n.manager_id, n.reservation_id, n.confirmation, 
+	   n.description, r.price, r.reservation_id  as "reservationID", r.date, r.time,
+	   u.user_id, u.first_name as "customer_name", u.last_name as "customer_surname"
+from notification as n inner join reservation as r on (n.reservation_id = r.reservation_id)
+					inner join customer as c on (r.customer_id = c.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)
+where n.description = #[flowVars.description]]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="c2ab4b07-968e-4f30-bea0-8e5c55313420">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	notification_id: payload.notification_id,
+	manager_id: payload.manager_id,
+	confirmation: payload.confirmation,
+	description: payload.description,
+	reservation: {
+		reservation_id: payload.reservation_id,
+		date: payload.date,
+		time: payload.time,
+		price: payload.price
+	},
+	customer: {
+		customer_id: payload.customer_id,
+		user: {
+			user_id: payload.user_id,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<db:select config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[select n.notification_id, n.customer_id, n.manager_id, n.reservation_id, n.confirmation, 
+	   n.description, r.price, r.reservation_id  as "reservationID", r.date, r.time,
+	   u.user_id, u.first_name as "customer_name", u.last_name as "customer_surname"
+from notification as n inner join reservation as r on (n.reservation_id = r.reservation_id)
+					inner join customer as c on (r.customer_id = c.customer_id)
+                    inner join user as u on (c.user_id = u.user_id)]]></db:parameterized-query>
+				</db:select>
+				<dw:transform-message doc:name="Transform Message" metadata:id="c2ab4b07-968e-4f30-bea0-8e5c55313420">
+					<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload map ((payload, indexOfPayload)->{
+	notification_id: payload.notification_id,
+	manager_id: payload.manager_id,
+	confirmation: payload.confirmation,
+	description: payload.description,
+	reservation: {
+		reservation_id: payload.reservation_id,
+		date: payload.date,
+		time: payload.time,
+		price: payload.price
+	},
+	customer: {
+		customer_id: payload.customer_id,
+		user: {
+			user_id: payload.user_id,
+			first_name: payload.customer_name,
+			last_name: payload.customer_surname
+		}
+	}
+})]]></dw:set-payload>
+				</dw:transform-message>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

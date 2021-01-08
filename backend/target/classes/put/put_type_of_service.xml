@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<flow name="put_type_of_serviceFlow">
+		<set-variable variableName="id" value="#[message.inboundProperties.'http.uri.params'.get('type_of_service_id').toString()]" doc:name="Variable"/>
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="object" value="#[payload]" doc:name="Variable"/>
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[update type_of_service	
+set		type_of_service_id = #[payload.type_of_service_id], 
+		service_id = #[payload.service.service_id], 
+		name = #[payload.name],
+		description = #[payload.description],
+		price = #[payload.price],
+		actual = #[payload.actual]	
+where type_of_service_id = #[flowVars.id]]]></db:parameterized-query>
+		</db:update>
+		<logger message="&quot;Loger choice!!!&quot;" level="INFO" doc:name="Logger"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload == 0]">
+				<db:insert config-ref="MySQL_Configuration" doc:name="Database">
+					<db:parameterized-query><![CDATA[insert into type_of_service values ( #[flowVars.object.type_of_service_id], #[flowVars.object.service.service_id], #[flowVars.object.name], #[flowVars.object.description], #[flowVars.object.price], #[flowVars.object.actual] )]]></db:parameterized-query>
+				</db:insert>
+				<set-payload value="#['Successful post']" doc:name="Set Payload"/>
+			</when>
+			<otherwise>
+				<set-payload value="#['Successful update']" doc:name="Copy_of_Set Payload"/>
+			</otherwise>
+		</choice>
+		<choice-exception-strategy doc:name="Copy_of_Choice_Exception_Strategy">
+			<catch-exception-strategy when="#[exception.causeMatches('java.sql.SQLIntegrityConstraintViolationException')]" doc:name="Copy_of_Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Constraint error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('com.mysql.cj.jdbc.exceptions.MysqlDataTruncation')]" doc:name="Copy_of_Exception Strategy">
+				<set-payload value="#[&quot;Data truncation!   -----&gt;    &quot; + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Data error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('java.sql.SQLException')]" doc:name="Copy_of_Exception Strategy">
+				<set-payload value="#[&quot;Data truncated for column...    -----&gt;    &quot; + exception]" doc:name="Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Property"/>
+				<logger message="&quot;Data error&quot;" level="INFO" doc:name="Copy_of_Logger"/>
+			</catch-exception-strategy>
+			<catch-exception-strategy when="#[exception.causeMatches('java.lang.IllegalArgumentException')]" doc:name="Copy_of_Copy_of_Exception Strategy">
+				<set-payload value="#[&quot;Exception!   -----&gt;    &quot;  + exception]" doc:name="Copy_of_Copy_of_Set Payload"/>
+				<set-property propertyName="http.status" value="500" doc:name="Copy_of_Copy_of_Property"/>
+				<logger message="&quot;Illegal argument&quot;" level="INFO" doc:name="Copy_of_Copy_of_Logger"/>
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+</mule>
