@@ -1,0 +1,100 @@
+<html>
+<body>
+  <div class="title">
+    <h1> Salon bjuti en ker </h1>
+  </div>
+  <form class="col-sm-6" #registration_form = "ngForm" (ngSubmit)="onSubmit(registration_form.value)">
+    <img src="../../../assets/img/lg1.png" class="image" alt="salon logo">
+    <div class= "form-div container">
+      <div class="col-md-4 mb-3 div-name">
+          <label for="first_name">First name</label>
+          <input type="text" id= "first_name" class="form-control" placeholder="First name" name = "first_name" #first_name= "ngModel" ngModel required
+                [ngClass]="{
+                'is-valid': ((!first_name.invalid) && first_name.touched) === true,
+                'is-invalid': (first_name.invalid && first_name.touched) === true,
+                'neutral': (first_name.touched) === false}"
+                >
+        </div>
+        <div class="col-md-4 mb-3 ">
+          <label for="last_name">Last name</label>
+          <input type="text" id= "last_name" class="form-control" placeholder="Last name" name = "last_name" #last_name= "ngModel" ngModel required
+                [ngClass]="{
+                'is-valid': ((!last_name.invalid) && last_name.touched) === true,
+                'is-invalid': (last_name.invalid && last_name.touched) === true,
+                'neutral': (last_name.touched) === false}"
+                >
+        </div>
+        <div class="col-md-4 mb-3 ">
+          <label for="email">Email</label>
+            <input type="email" id= "email" class="form-control" placeholder="Email" name = "email" #email= "ngModel" ngModel required
+                  [ngClass]="{
+                  'is-valid': ((!email.invalid) && email.touched) === true,
+                  'is-invalid': (email.invalid && email.touched) === true,
+                  'neutral': (email.touched) === false}"
+                  >
+        </div>
+        <div class="col-md-4 mb-3 ">
+          <label for="phone">Phone number</label>
+            <input type="phone" id= "phone" class="form-control" placeholder="Phone number" name = "phone" #phone= "ngModel" ngModel required
+                  [ngClass]="{
+                  'is-valid': ((!phone.invalid) && phone.touched) === true,
+                  'is-invalid': (phone.invalid && phone.touched) === true,
+                  'neutral': (phone.touched) === false}"
+                  >
+        </div>
+        <div class="col-md-4 mb-3 ">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <input [type]="eyeFieldIndicator ? 'text' : 'password'" id= "password" class="form-control" placeholder="Password" name = "password" #password= "ngModel" ngModel required
+                  [ngClass]="{
+                  'is-valid': ((!password.invalid) && password.touched) === true,
+                  'is-invalid': (password.invalid && password.touched) === true,
+                  'neutral': (password.touched) === false}"
+                  (keyup)="0"
+                  >
+                  <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fa"
+                        (click) = "onClickEyeField()" 
+                        [ngClass] = "{'fa-eye-slash': eyeFieldIndicator === false ,
+                                      'fa-eye': eyeFieldIndicator === true }"
+                        >
+                        </i>
+                    </span>
+                  </div>
+                </div>
+          </div>
+        <div class="col-md-4 mb-3 ">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <input [type]="eyeFieldIndicatorAgain ? 'text' : 'password'" id= "password_again" class="form-control" placeholder="Password again" name = "password_again" #password_again= "ngModel" ngModel required
+                  [ngClass]="{
+                  'is-valid': ((!password_again.invalid) && password_again.touched) === true,
+                  'is-invalid': (password_again.invalid && password_again.touched) === true,
+                  'neutral': (password_again.touched) === false}"
+                  (keyup)="0"
+                  >
+                  <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fa"
+                        (click) = "onClickEyeFieldAgain()" 
+                        [ngClass] = "{'fa-eye-slash': eyeFieldIndicatorAgain === false ,
+                                      'fa-eye': eyeFieldIndicatorAgain === true }"
+                        >
+                        </i>
+                    </span>
+                  </div>
+          </div>
+        </div>
+      <button class="btn btn-secondary btn-sm" type="submit" 
+      [disabled]="password_again.invalid || password.invalid || 
+                  first_name.invalid || last_name.invalid || 
+                  phone.invalid || email.invalid
+                  || password.invalid || password_again.invalid ||  
+                  (password.value !== password_again.value)"
+                        required>Submit</button>
+    </div>  
+  </form>
+
+</body>
+</html>

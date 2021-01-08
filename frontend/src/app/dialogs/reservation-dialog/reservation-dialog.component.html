@@ -1,0 +1,129 @@
+<div class="fields-container container">
+    <h1 *ngIf="flag === 1">Add manager </h1>
+    <h1 *ngIf="flag === 2">Edit manager</h1>
+    <h1 *ngIf="flag === 3">Are you sure?</h1>
+
+    <form class="form-mat" [ngClass] = "{'mat-input-wrapper-delete': (flag===3)}">
+        <div class="form"> 
+            <div class="col-md-12 mb-2">
+            <mat-form-field color="accent">
+                <mat-label>Date</mat-label>
+                <input  [formControl] = "date" matInput [matDatepicker]="picker1">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label>Time</mat-label>
+                    <mat-select  [formControl] = "time" [(value)]="data.time">
+                      <mat-option *ngFor="let time of times;" [value] = "time" > 
+                        {{time}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label>Customer</mat-label>
+                    <mat-select [formControl] = "customer" [(value)]="selected_customer">
+                      <mat-option *ngFor="let customer of customers;" [value] = "customer">
+                        {{customer.user.email}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label>Worker</mat-label>
+                    <mat-select [formControl] = "worker" [(value)]="selected_worker">
+                      <mat-option *ngFor="let worker of workers;" [value] = "worker.worker_id">
+                        {{worker.user.email}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label> Confirmation </mat-label>
+                    <mat-select [formControl] = "confirmation" [(value)]="selected" placeholder="selected">
+                      <mat-option value="true"> true </mat-option>
+                      <mat-option value="false"> false </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label>Type of service</mat-label>
+                    <mat-select [formControl] = "type_of_service" [(value)]="selected_type">
+                      <mat-option *ngFor="let type of type_of_services;" [value] = "type.type_of_service_id">
+                        {{type.name}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <mat-form-field>
+                    <mat-label>Status</mat-label>
+                    <mat-select [formControl] = "status" [(value)]="selected_status">
+                      <mat-option *ngFor="let status of statuses;" [value] = "status.status_id">
+                        {{status.status_name}}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Price</mat-label>
+                    <input type="number" required matInput [formControl] = "price"  [(ngModel)]="data.price"  *ngIf = "flag === 2" >
+                    <input type="number" required matInput [formControl] = "price"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Description</mat-label>
+                    <input type="text" required matInput [formControl] = "description"  [(ngModel)]="data.description"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "description"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+
+        </div>
+        <div class="form" *ngIf="flag == 3">
+            <mat-form-field class="delete-form">
+                <strong>
+                    Are you sure?
+                </strong>
+            </mat-form-field>
+        </div>
+        
+    </form>
+        <mat-dialog-actions>
+            <button  class= "buttons" mat-raised-button color="accent" mat-dialog-close mat-dialog-close="false">Cancel</button>
+
+            <button *ngIf="flag === 3" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onDelete()"
+            > Delete </button>
+
+            <button *ngIf="flag === 2" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onEdit()"
+            [disabled]="date.invalid || time.invalid || confirmation.invalid || description.invalid || 
+                        type_of_service.invalid || status.invalid || worker.invalid || customer.invalid"
+            > Edit </button>
+
+            <button *ngIf="flag === 1" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onAdd()"
+            [disabled]="date.invalid || time.invalid || confirmation.invalid || description.invalid || 
+                        type_of_service.invalid || status.invalid || worker.invalid || customer.invalid"
+            > Add </button>
+
+        </mat-dialog-actions>
+</div>

@@ -1,0 +1,11 @@
+<body>
+    <div class="hero-image">
+        <div>
+            <h1 style="font-size: 35pt; margin-left: 33%;">Welcome to Beauty salon</h1>
+        </div>
+        <div class="buttons" style = "margin: 110pt 42%;">
+            <button *ngIf= "logged === true" routerLink = "/reservation" class="btn btn-danger" style="width: 130pt; height: 50pt; text-align: center;"> Make reservation </button>
+            <button *ngIf= "logged === false" routerLink = "/login" class="btn btn-danger" style="width: 130pt; height: 50pt; text-align: center;"> Make reservation </button>
+        </div>
+    </div>
+</body>

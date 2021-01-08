@@ -1,0 +1,68 @@
+<div class="fields-container container">
+    <h1 *ngIf="flag === 1">Add service</h1>
+    <h1 *ngIf="flag === 2">Edit service</h1>
+    <h1 *ngIf="flag === 3">Are you sure?</h1>
+
+    <form class="form-mat" [ngClass] = "{'mat-input-wrapper-delete': (flag===3)}">
+        <div class="form"> 
+            <div class="col-md-12 mb-3" *ngIf = "flag === 2" >
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>ID</mat-label>
+                    <input type="text" required matInput [formControl] = "service_id" [(ngModel)] ="data.service_id">
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Service name</mat-label>
+                    <input type="text" required matInput [formControl] = "service_name"  [(ngModel)]="data.service_name"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "service_name"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <!-- <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Actual</mat-label>
+                    <input type="text" matInput required [formControl] = "actual"  [(ngModel)]="data.actual"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "actual"   *ngIf = "flag === 1" >
+                </mat-form-field> -->
+                <mat-form-field>
+                    <mat-label> Actual </mat-label>
+                    <mat-select [(value)]="selected" placeholder="selected">
+                      <mat-option value="true"> true </mat-option>
+                      <mat-option value="false"> false </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+        </div>
+        <div class="form" *ngIf="flag == 3">
+            <mat-form-field class="delete-form">
+                <strong>
+                    Are you sure?
+                </strong>
+            </mat-form-field>
+        </div>
+        
+    </form>
+        <mat-dialog-actions>
+            <button  class= "buttons" mat-raised-button color="accent" mat-dialog-close mat-dialog-close="false">Cancel</button>
+
+            <button *ngIf="flag === 3" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onDelete()"
+            > Delete </button>
+
+            <button *ngIf="flag === 2" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onEdit()"
+            [disabled]="service_id.invalid || service_name.invalid || actual.invalid"> Edit </button>
+
+            <button *ngIf="flag === 1" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onAdd()"
+            [disabled]="service_name.invalid"> Add </button>
+
+        </mat-dialog-actions>
+</div>

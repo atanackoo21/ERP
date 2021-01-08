@@ -1,0 +1,28 @@
+
+<nav class="navbar navbar-dark bg-dark">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a  href="#" routerLink = "/land">Home</a>
+        </li>
+        <li class="nav-item">
+          <a  id = "white" href="#" routerLink = "/reservation" *ngIf = "userLogged === true">Reservation</a>
+        </li>
+        <li class="nav-item" *ngIf = "userLogged === true || adminLogged === true">
+          <a href="/profile" routerLink= "/profile">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a href="/edit" routerLink= "/edit" *ngIf = "adminLogged === true">Edit</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav my-2 my-lg-0">
+      <li class="nav-item">
+        <a id = "white" style="cursor:pointer" (click)="logOut()" *ngIf = "userLogged === true || adminLogged === true">Log out</a>
+      </li>
+        <li class="nav-item ">
+          <a href="/login" routerLink= "/login" *ngIf = "userLogged === false && adminLogged === false">Sign in</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" routerLink= "/registration" *ngIf = "userLogged === false && adminLogged === false">Register</a>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,36 @@
+.navbar-nav{
+    display: inline;
+}
+
+.nav-item{
+    display: inline-block;
+    margin-left: 15pt;
+}
+
+.navbar{
+    height: 8%;
+}
+
+/* A link that has not been visited */
+a:link {
+    color: black;
+}
+/* A link that has been visited */
+a:visited {
+    color: white;
+    text-decoration: none;
+}
+/* A link that is hovered on */
+a:hover {
+    color: #b48bf7;
+    text-decoration: none;
+}
+/* A link that is selected */
+a:active {
+    color: rgb(196, 56, 252);
+    text-decoration: none;
+}
+
+#white {
+    color: white;
+}

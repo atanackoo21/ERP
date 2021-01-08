@@ -1,0 +1,43 @@
+.form-mat{
+    margin-left: 35%;
+    max-height: 35%;
+
+
+}
+
+.mat-input-wrapper{
+    width:330px !important;
+    height: 10px;
+}
+
+body {
+    width: max;
+    height: max;
+    background-color: pink;
+}
+
+// ::ng-deep .mat-focused .mat-form-field-label {
+//     /*change color of label*/
+// }
+
+.buttons{
+    // margin-left: 45pt;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+
+.delete-form{
+    text-align: center;
+    align-items: center;
+}
+
+.mat-input-wrapper-delete{
+    width: 330px !important;
+    height: 60px;
+    overflow: hidden;
+}
+
+mat-form-field {
+    margin-right: 12px;
+  }

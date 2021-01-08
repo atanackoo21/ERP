@@ -1,0 +1,38 @@
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 div-cover">
+                <div class="cover" id="div-img">
+                    <img src="../../assets/img/profile.png" class="profile-pic" alt="Profile_picture">
+                    <div id="name">
+                        <span id="name"><strong>{{user.first_name}} {{user.last_name}}</strong> </span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-secondary" (click)="openDialog()"> Change password <i class="fa fa-key"></i></button> 
+                        <button class="btn btn-secondary" routerLink= "/reservation"> Make reservation <i class="fa fa-wpforms"></i> </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 div-left">
+                <div class= "user-data">
+                    <p>
+                        <strong> Email: {{user.email}} </strong>
+                    </p>
+                    <p>
+                        <strong> Phone: {{user.phone}} </strong>
+                    </p>
+
+                </div>
+            </div>
+            <div class="col-sm-4 div-right">
+                <div>
+                    <span><strong> Points: 0 </strong> </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+

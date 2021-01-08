@@ -1,0 +1,13 @@
+<body>
+    <div class="buttons"> 
+        <button (click) = "showStatuses()" mat-raised-button color="primary" class="btns" style="margin-top: 5px; margin-left: 29%; margin-right: 5px;"> Status </button> 
+        <button (click) = "showServices()"  mat-raised-button color="warn" class="btns" style="margin-top: 5px; margin-left: 5px; margin-right: 5px;"> Service </button> 
+        <button (click) = "showTypeOfServices()" mat-raised-button color="accent" class="btns" style="color: white; margin-top: 5px; margin-left: 5px; margin-right: 5px;"> Type of service </button> 
+        <button (click) = "showReservations()" mat-raised-button color="primary" class="btns" style="margin-top: 5px; margin-left: 5px; margin-right: 5px;"> Reservation </button> 
+        <button (click) = "showManagers()" mat-raised-button color="primary" class="btns" style="margin-top: 5px; margin-left: 5px; margin-right: 5px;"> Manager </button> 
+    </div>
+    
+    <div class="status-div" style="margin-top: 3%;">
+        <router-outlet></router-outlet>
+    </div>
+</body>

@@ -1,0 +1,86 @@
+<div class="fields-container container">
+    <h1 *ngIf="flag === 1">Add manager </h1>
+    <h1 *ngIf="flag === 2">Edit manager</h1>
+    <h1 *ngIf="flag === 3">Are you sure?</h1>
+
+    <form class="form-mat" [ngClass] = "{'mat-input-wrapper-delete': (flag===3)}">
+        <div class="form"> 
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>First name</mat-label>
+                    <input type="text" required matInput [formControl] = "first_name"  [(ngModel)]="data.first_name"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "first_name"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Last name</mat-label>
+                    <input type="text" required matInput [formControl] = "last_name"  [(ngModel)]="data.last_name"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "last_name"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Email</mat-label>
+                    <input type="text" required matInput [formControl] = "email"  [(ngModel)]="data.email"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "email"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Phone</mat-label>
+                    <input type="text" required matInput [formControl] = "phone"  [(ngModel)]="data.phone"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "phone"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Role</mat-label>
+                    <input type="text" required matInput [formControl] = "role"  [(ngModel)]="data.role"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "role"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-4">
+                <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                    <mat-label>Password</mat-label>
+                    <input type="text" required matInput [formControl] = "password"  [(ngModel)]="data.password"  *ngIf = "flag === 2" >
+                    <input type="text" required matInput [formControl] = "password"   *ngIf = "flag === 1" >
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="form" *ngIf="flag == 3">
+            <mat-form-field class="delete-form">
+                <strong>
+                    Are you sure?
+                </strong>
+            </mat-form-field>
+        </div>
+        
+    </form>
+        <mat-dialog-actions>
+            <button  class= "buttons" mat-raised-button color="accent" mat-dialog-close mat-dialog-close="false">Cancel</button>
+
+            <button *ngIf="flag === 3" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onDelete()"
+            > Delete </button>
+
+            <button *ngIf="flag === 2" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onEdit()"
+            [disabled]="email.invalid || phone.invalid || first_name.invalid || 
+                        last_name.invalid || password.invalid || role.invalid"
+            > Edit </button>
+
+            <button *ngIf="flag === 1" class= "buttons" 
+            mat-raised-button color="primary" 
+            mat-dialog-close mat-dialog-close="true" 
+            (click)="onAdd()"
+            [disabled]="email.invalid || phone.invalid || first_name.invalid || 
+                        last_name.invalid || password.invalid || role.invalid"
+            > Add </button>
+
+        </mat-dialog-actions>
+</div>

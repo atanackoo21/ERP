@@ -1,0 +1,78 @@
+<body>
+    <div class="fields-container container" style=" margin-top:10pt;  background-color: #736060;
+    border-radius: 5pt;">
+        <h1 style="color: white; text-align: center; margin-left: -7pt;"> Make reservation </h1>
+    
+        <form class="form-mat">
+            <div class="form"> 
+                <div class="col-md-12 mb-2">
+                <mat-form-field color="accent">
+                    <mat-label>Date</mat-label>
+                    <input  [formControl] = "date" matInput [matDatepicker]="picker1">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <mat-form-field>
+                        <mat-label>Time</mat-label>
+                        <mat-select  [formControl] = "time">
+                          <mat-option *ngFor="let time of times;" [value] = "time" > 
+                            {{time}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <mat-form-field>
+                        <mat-label>Worker</mat-label>
+                        <mat-select [formControl] = "worker" [(value)]="selected_worker">
+                          <mat-option *ngFor="let worker of workers;" [value] = "worker.worker_id">
+                            {{worker.user.email}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <mat-form-field>
+                        <mat-label> Confirmation </mat-label>
+                        <mat-select [formControl] = "confirmation" [(value)]="selected" placeholder="selected">
+                          <mat-option value="true"> true </mat-option>
+                          <mat-option value="false"> false </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+    
+                </div>
+                <div class="col-md-12 mb-2">
+                    <mat-form-field>
+                        <mat-label>Type of service</mat-label>
+                        <mat-select [formControl] = "type_of_service" [(value)]="selected_type">
+                          <mat-option *ngFor="let type of type_of_services;" [value] = "type.type_of_service_id">
+                            {{type.name}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+    
+               
+                <div class="col-md-7 mb-3" style="width: 20pt;">
+                    <mat-form-field appearance="fill" class="mat-input-wrapper" color="accent">
+                        <mat-label>Description</mat-label>
+                        <input type="text" required matInput [formControl] = "description" >
+                    </mat-form-field>
+                </div>
+    
+            </div>
+            <button style="margin-left: 45pt; "
+                mat-raised-button color="primary" 
+                (click)="onAdd()"
+                [disabled]="date.invalid || time.invalid || confirmation.invalid || description.invalid || 
+                            type_of_service.invalid"
+                > Add </button>
+        </form>
+    
+                
+    
+    </div>
+</body>
+

@@ -1,0 +1,28 @@
+.form-mat{
+    max-height: 35%;
+}
+
+.mat-input-wrapper{
+    width:330px !important;
+    height: 60px;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+    /*change color of label*/
+    color: white !important;
+}
+
+.buttons{
+    margin-left: 26%;
+}
+
+.delete-form{
+    text-align: center;
+    align-items: center;
+}
+
+.mat-input-wrapper-delete{
+    width: 330px !important;
+    height: 60px;
+    overflow: hidden;
+}
